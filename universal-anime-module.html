@@ -1,0 +1,1049 @@
+<!-- ========================================== -->
+<!-- UNIVERSAL ANIME EPISODE SYSTEM MODULE      -->
+<!-- ========================================== -->
+
+<!-- MODULE CSS -->
+<style>
+    :root {
+        --aes-bg: #121212;
+        --aes-card-bg: #1e1e1e;
+        --aes-text-main: #ffffff;
+        --aes-text-muted: #aaaaaa;
+        --aes-accent: #e50914; /* Red accent for anime sites */
+        --aes-accent-hover: #f40612;
+        --aes-border: #333333;
+        --aes-radius: 8px;
+        --aes-transition: all 0.2s ease-in-out;
+    }
+
+    #animeEpisodeSystem * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    #animeEpisodeSystem {
+        background-color: var(--aes-bg);
+        color: var(--aes-text-main);
+        border-radius: var(--aes-radius);
+        padding: 20px;
+        margin: 20px 0;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    /* MODULE VIEWS */
+    #aes-list-view, #aes-detail-view, #aes-watch-view {
+        transition: opacity 0.3s ease;
+    }
+
+    .aes-hidden {
+        display: none !important;
+    }
+
+    /* SEARCH AND FILTERS */
+    .aes-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        background: var(--aes-card-bg);
+        padding: 15px;
+        border-radius: var(--aes-radius);
+    }
+
+    .aes-input, .aes-select {
+        background: #2a2a2a;
+        color: white;
+        border: 1px solid var(--aes-border);
+        padding: 10px 15px;
+        border-radius: 4px;
+        outline: none;
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .aes-input:focus, .aes-select:focus {
+        border-color: var(--aes-accent);
+    }
+
+    .aes-btn {
+        background: var(--aes-accent);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: var(--aes-transition);
+        white-space: nowrap;
+    }
+
+    .aes-btn:hover {
+        background: var(--aes-accent-hover);
+        transform: translateY(-2px);
+    }
+
+    /* ANIME GRID */
+    .aes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .aes-anime-card {
+        background: var(--aes-card-bg);
+        border-radius: var(--aes-radius);
+        overflow: hidden;
+        cursor: pointer;
+        transition: var(--aes-transition);
+        position: relative;
+    }
+
+    .aes-anime-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    .aes-anime-poster {
+        width: 100%;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+        background-color: #333;
+    }
+
+    .aes-anime-info {
+        padding: 10px;
+    }
+
+    .aes-anime-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 0 5px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .aes-anime-meta {
+        font-size: 12px;
+        color: var(--aes-text-muted);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* ANIME DETAIL VIEW */
+    .aes-back-btn {
+        background: transparent;
+        color: var(--aes-text-muted);
+        border: 1px solid var(--aes-border);
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .aes-back-btn:hover {
+        color: white;
+        border-color: white;
+    }
+
+    .aes-detail-header {
+        display: flex;
+        gap: 20px;
+        background: var(--aes-card-bg);
+        padding: 20px;
+        border-radius: var(--aes-radius);
+        margin-bottom: 20px;
+    }
+
+    @media(max-width: 768px) {
+        .aes-detail-header {
+            flex-direction: column;
+        }
+    }
+
+    .aes-detail-poster {
+        width: 200px;
+        border-radius: var(--aes-radius);
+        object-fit: cover;
+    }
+
+    .aes-detail-info h2 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+    }
+
+    .aes-badges {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .aes-badge {
+        background: #333;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .aes-badge.status { background: #28a745; margin-right: 5px; }
+    .aes-badge.type { background: #007bff; margin-right: 5px; }
+
+    .aes-desc {
+        color: var(--aes-text-muted);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .aes-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        background: #111;
+        padding: 10px;
+        border-radius: var(--aes-radius);
+        text-align: center;
+        font-size: 13px;
+    }
+    
+    @media(max-width: 480px) {
+        .aes-stats-grid { grid-template-columns: 1fr; }
+    }
+
+    .aes-stats-grid span { font-weight: bold; color: var(--aes-accent); font-size: 16px; display: block; }
+
+    /* LANGUAGE TABS */
+    .aes-tabs {
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid var(--aes-border);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        overflow-x: auto;
+    }
+
+    .aes-tab {
+        background: transparent;
+        color: var(--aes-text-muted);
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .aes-tab:hover {
+        color: white;
+    }
+
+    .aes-tab.active {
+        color: var(--aes-accent);
+    }
+
+    .aes-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--aes-accent);
+    }
+
+    /* EPISODE LIST */
+    .aes-episode-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .aes-episode-card {
+        background: var(--aes-card-bg);
+        border: 1px solid var(--aes-border);
+        border-radius: var(--aes-radius);
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        transition: var(--aes-transition);
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .aes-episode-card:hover {
+        border-color: var(--aes-accent);
+        transform: translateY(-2px);
+    }
+
+    .aes-ep-num {
+        font-weight: bold;
+        color: var(--aes-accent);
+        font-size: 18px;
+    }
+
+    .aes-ep-title {
+        font-size: 14px;
+        color: #ddd;
+    }
+
+    .aes-ep-meta {
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .aes-ep-quality {
+        background: #333;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: white;
+    }
+
+    .aes-watch-btn {
+        background: var(--aes-accent);
+        color: white;
+        text-align: center;
+        padding: 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        display: block;
+        transition: var(--aes-transition);
+        margin-top: auto;
+    }
+
+    .aes-watch-btn:hover {
+        background: var(--aes-accent-hover);
+    }
+
+    /* PAGINATION / LOAD MORE */
+    .aes-load-more {
+        display: block;
+        width: 100%;
+        max-width: 250px;
+        margin: 30px auto;
+        padding: 12px;
+        background: transparent;
+        color: white;
+        border: 2px solid var(--aes-border);
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: var(--aes-transition);
+        text-align: center;
+    }
+
+    .aes-load-more:hover {
+        border-color: var(--aes-accent);
+        color: var(--aes-accent);
+    }
+
+    .aes-no-data {
+        text-align: center;
+        padding: 40px;
+        color: var(--aes-text-muted);
+        grid-column: 1 / -1;
+    }
+
+    /* WATCH VIEW CSS */
+    .aes-player-wrapper {
+        background: #000;
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: var(--aes-radius);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+        border: 1px solid var(--aes-border);
+    }
+    
+    .aes-player-wrapper svg {
+        fill: #666;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 20px;
+    }
+    
+    .aes-player-wrapper h3 {
+        color: var(--aes-text-muted);
+        margin: 0;
+    }
+    
+    @keyframes aes-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .aes-watch-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .aes-control-btn {
+        background: #333;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: var(--aes-transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .aes-control-btn:hover { background: #444; }
+    .aes-control-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .aes-control-btn.dl { background: var(--aes-accent); }
+    .aes-control-btn.dl:hover { background: var(--aes-accent-hover); }
+
+    .aes-ad-placeholder {
+        background: #1e1e1e;
+        border: 2px dashed #444;
+        color: #888;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin: 20px auto;
+        overflow: hidden;
+        border-radius: var(--aes-radius);
+    }
+    
+    .aes-ad-top { width: 100%; max-width: 728px; height: 90px; }
+    .aes-ad-bottom { width: 100%; max-width: 300px; height: 250px; }
+    
+    @media (max-width: 768px) {
+        .aes-ad-top { max-width: 320px; height: 50px; }
+    }
+
+
+
+    .desktop-ad { display: block; }
+    .mobile-ad { display: none; }
+    @media (max-width: 768px) {
+        .desktop-ad { display: none !important; }
+        .mobile-ad { display: block !important; }
+    }
+</style>
+
+<!-- MODULE HTML -->
+<div id="animeEpisodeSystem">
+    
+    <!-- VIEW: LIST ALL ANIME -->
+    <div id="aes-list-view">
+        <h2 style="margin-bottom: 20px; color: var(--aes-accent);">Anime Titles</h2>
+        <div class="aes-controls">
+            <input type="text" id="aes-search-input" class="aes-input" placeholder="Search anime... (e.g. Naruto)">
+            <select id="aes-filter-lang" class="aes-select">
+                <option value="all">All Languages</option>
+                <option value="hindi">Hindi Dubbed Available</option>
+                <option value="english">English Dubbed Available</option>
+                <option value="original">Original Audio</option>
+            </select>
+            <select id="aes-filter-status" class="aes-select">
+                <option value="all">All Status</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button class="aes-btn" id="aes-search-btn">Filter</button>
+        </div>
+        <div id="aes-anime-grid" class="aes-grid">
+            <!-- Anime Cards will be injected here -->
+        </div>
+    </div>
+
+    <!-- VIEW: ANIME EPISODES DETAIL -->
+    <div id="aes-detail-view" class="aes-hidden">
+        <button class="aes-back-btn" id="aes-back-btn">← Back to List</button>
+        
+        <div class="aes-detail-header" id="aes-detail-header">
+            <!-- Header items injected here -->
+        </div>
+
+        <div class="aes-tabs" id="aes-lang-tabs">
+            <button class="aes-tab active" data-lang="original">Original Audio</button>
+            <button class="aes-tab" data-lang="english">English Dubbed</button>
+            <button class="aes-tab" data-lang="hindi">Hindi Dubbed</button>
+        </div>
+        
+        <div class="aes-controls" id="aes-ep-controls" style="padding: 10px;">
+             <!-- Search episode by number -->
+             <input type="text" id="aes-ep-search" class="aes-input" placeholder="Search Episode Number or Title...">
+        </div>
+
+        <div id="aes-episode-list" class="aes-episode-list">
+            <!-- Episodes will be injected here -->
+        </div>
+        
+        <button id="aes-load-more" class="aes-load-more aes-hidden">Load More Episodes</button>
+    </div>
+
+    <!-- VIEW: WATCH EPISODE -->
+    <div id="aes-watch-view" class="aes-hidden">
+        <button class="aes-back-btn" id="aes-watch-back-btn">← Back to Episodes</button>
+        
+        <h2 id="aes-watch-title" style="margin-bottom: 20px; color: var(--aes-accent); font-size: 24px;"></h2>
+
+        <div class="aes-player-wrapper" id="aes-video-player" style="position:relative; background:#0f0f0f; display:block;">
+            <div id="aes-player-play-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; width:100%; height:100%; position:absolute; top:0; left:0; z-index:10;" onclick="aesHandlePlayClick()">
+                <svg viewBox="0 0 24 24" style="fill:var(--aes-accent); width:90px; height:90px; transition: transform 0.2s; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                <div style="position:absolute; bottom:0; left:0; width:100%; height:45px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); display:flex; align-items:center; padding:0 20px; box-sizing:border-box;">
+                    <svg viewBox="0 0 24 24" style="fill:#fff; width:24px; height:24px; margin-right:15px;"><path d="M8 5v14l11-7z"/></svg>
+                    <div style="flex:1; height:4px; background:rgba(255,255,255,0.3); border-radius:2px; position:relative;"><div style="position:absolute; top:0; left:0; height:100%; width:0%; background:var(--aes-accent); border-radius:2px;"></div></div>
+                    <svg viewBox="0 0 24 24" style="fill:#fff; width:20px; height:20px; margin-left:15px;"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                    <svg viewBox="0 0 24 24" style="fill:#fff; width:20px; height:20px; margin-left:15px;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                </div>
+            </div>
+            <div id="aes-player-loading-state" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
+                <div style="width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top: 5px solid var(--aes-accent); border-radius: 50%; animation: aes-spin 1s linear infinite; margin-bottom:15px;"></div>
+                <p style="margin:0; font-size:16px;">Loading video...</p>
+            </div>
+            <div id="aes-player-error-state" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
+                <svg viewBox="0 0 24 24" style="fill:#ffdd59; width:50px; height:50px; margin-bottom:15px;"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                <h3 style="margin-bottom:5px; margin-top:0;">Network Connection Error</h3>
+                <button class="aes-control-btn" style="padding: 10px 25px; font-size:16px; background:var(--aes-accent); border-radius:var(--aes-radius); cursor:pointer; font-weight:bold; color:white; margin-top: 15px;" onclick="aesHandlePlayClick()">Retry</button>
+            </div>
+        </div>
+
+        <div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>
+
+        <div class="aes-watch-controls">
+            <button class="aes-control-btn" id="aes-btn-prev">← Previous Episode</button>
+            <button class="aes-control-btn dl" onclick="alert('Download link placeholder')">Download Episode ↓</button>
+            <button class="aes-control-btn" id="aes-btn-next">Next Episode →</button>
+        </div>
+
+        <div class="aes-detail-header" id="aes-watch-detail-header" style="flex-direction: column;">
+            <!-- Anime details injected here -->
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 15px; border-left: 4px solid var(--aes-accent); padding-left: 10px;">Related Episodes</h3>
+        <div id="aes-related-episodes" class="aes-episode-list">
+            <!-- Related episodes injected here -->
+        </div>
+        
+        <div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>
+
+    </div>
+
+</div>
+
+<!-- MODULE JAVASCRIPT -->
+<script>
+/**
+ * UNIVERSAL ANIME EPISODE SYSTEM - DATA CONFIGURATION
+ * Edit this array to add/update/remove your anime.
+ * The system supports unlimited entries.
+ */
+const animeData = [
+    { animeId: "one-piece", animeName: "One Piece", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg", totalOriginalEpisodes: 1106, totalHindiDubbedEpisodes: 350, totalEnglishDubbedEpisodes: 1083, status: "Ongoing", genre: ["Action", "Adventure", "Comedy"], releaseYear: "1999", type: "TV", description: "Gol D. Roger was known as the Pirate King. After his death, his wealth went up for grabs. Follow Monkey D. Luffy as he tries to find the legendary treasure!" },
+    { animeId: "demon-slayer", animeName: "Demon Slayer", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21612-d5zrx9CWkxNl.png", totalOriginalEpisodes: 63, totalHindiDubbedEpisodes: 63, totalEnglishDubbedEpisodes: 63, status: "Ongoing", genre: ["Action", "Fantasy"], releaseYear: "2019", type: "TV", description: "After his family is viciously murdered, a kind-hearted boy named Tanjiro Kamado resolves to become a Demon Slayer in hopes of turning his younger sister Nezuko back into a human." },
+    { animeId: "naruto-shippuden", animeName: "Naruto Shippuden", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1735-kGfVm0YqCPcu.png", totalOriginalEpisodes: 500, totalHindiDubbedEpisodes: 500, totalEnglishDubbedEpisodes: 500, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2007", type: "TV", description: "It has been two and a half years since Naruto Uzumaki left Konohagakure, the Hidden Leaf Village, for intense training." },
+    { animeId: "naruto", animeName: "Naruto", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-dE6UHbFFg1A5.jpg", totalOriginalEpisodes: 220, totalHindiDubbedEpisodes: 220, totalEnglishDubbedEpisodes: 220, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2002", type: "TV", description: "Moments prior to Naruto Uzumaki's birth, a huge demon known as the Kyuubi, the Nine-Tailed Fox, attacked Konohagakure." },
+    { animeId: "my-hero-academia", animeName: "My Hero Academia", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21459-nYh85uj2Fuwr.jpg", totalOriginalEpisodes: 159, totalHindiDubbedEpisodes: 138, totalEnglishDubbedEpisodes: 148, status: "Ongoing", genre: ["Action", "Sci-Fi"], releaseYear: "2016", type: "TV", description: "In a world where eighty percent of the population has some kind of super-powered quirk, Izuku was unlucky enough to be born completely normal." },
+    { animeId: "chainsaw-man", animeName: "Chainsaw Man", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127230-DdP4vAdssLoz.png", totalOriginalEpisodes: 12, totalHindiDubbedEpisodes: 12, totalEnglishDubbedEpisodes: 12, status: "Completed", genre: ["Action", "Supernatural"], releaseYear: "2022", type: "TV", description: "Denji has a simple dream: to live a happy and peaceful life, spending time with a girl he likes." },
+    { animeId: "solo-leveling", animeName: "Solo Leveling", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151807-it355ZgzquUd.png", totalOriginalEpisodes: 12, totalHindiDubbedEpisodes: 12, totalEnglishDubbedEpisodes: 12, status: "Ongoing", genre: ["Action", "Fantasy"], releaseYear: "2024", type: "TV", description: "Known as the Weakest Hunter of All Mankind, E-rank hunter Jinwoo Sung's contribution to raids amounts to trying not to get killed." },
+    { animeId: "jujutsu-kaisen", animeName: "Jujutsu Kaisen", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg", totalOriginalEpisodes: 47, totalHindiDubbedEpisodes: 47, totalEnglishDubbedEpisodes: 47, status: "Completed", genre: ["Action", "Supernatural"], releaseYear: "2020", type: "TV", description: "A boy swallows a cursed talisman—the finger of a demon—and becomes cursed himself." },
+    { animeId: "attack-on-titan", animeName: "Attack on Titan", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg", totalOriginalEpisodes: 89, totalHindiDubbedEpisodes: 89, totalEnglishDubbedEpisodes: 89, status: "Completed", genre: ["Action", "Drama"], releaseYear: "2013", type: "TV", description: "Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called titans." },
+    { animeId: "boruto", animeName: "Boruto: Naruto Next Generations", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97938-BnF6M5yTaNB1.jpg", totalOriginalEpisodes: 293, totalHindiDubbedEpisodes: 200, totalEnglishDubbedEpisodes: 293, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2017", type: "TV", description: "Boruto is the son of the 7th Hokage. Following in his father's footsteps, changing the world!" },
+    { animeId: "dragon-ball-z", animeName: "Dragon Ball Z", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx813-ZhnFNOeCU5dQ.png", totalOriginalEpisodes: 291, totalHindiDubbedEpisodes: 291, totalEnglishDubbedEpisodes: 291, status: "Completed", genre: ["Action", "Sci-Fi"], releaseYear: "1989", type: "TV", description: "Goku is back with his new son, Gohan, but just when things are getting settled down, the adventures continue." },
+    { animeId: "dragon-ball-super", animeName: "Dragon Ball Super", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21175-EH06qlfF8TnB.jpg", totalOriginalEpisodes: 131, totalHindiDubbedEpisodes: 131, totalEnglishDubbedEpisodes: 131, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2015", type: "TV", description: "With Majin Buu defeated, Goku has taken a completely new role as a radish farmer." },
+    { animeId: "bleach", animeName: "Bleach", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx269-d2GmRkJbMopq.png", totalOriginalEpisodes: 366, totalHindiDubbedEpisodes: 109, totalEnglishDubbedEpisodes: 366, status: "Completed", genre: ["Action", "Supernatural"], releaseYear: "2004", type: "TV", description: "Ichigo Kurosaki is an ordinary high schooler—until his family is attacked by a Hollow." },
+    { animeId: "hunter-x-hunter", animeName: "Hunter x Hunter", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx136-gj0bbCpDNrKG.jpg", totalOriginalEpisodes: 148, totalHindiDubbedEpisodes: 148, totalEnglishDubbedEpisodes: 148, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2011", type: "TV", description: "Hunter x Hunter is set in a world where Hunters exist to perform all manner of dangerous tasks." },
+    { animeId: "death-note", animeName: "Death Note", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg", totalOriginalEpisodes: 37, totalHindiDubbedEpisodes: 37, totalEnglishDubbedEpisodes: 37, status: "Completed", genre: ["Mystery", "Thriller"], releaseYear: "2006", type: "TV", description: "A genius high school student discovers a notebook that allows him to kill anyone whose name and face he knows." },
+    { animeId: "black-clover", animeName: "Black Clover", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-fyh8o7gNbha0.png", totalOriginalEpisodes: 170, totalHindiDubbedEpisodes: 170, totalEnglishDubbedEpisodes: 170, status: "Completed", genre: ["Action", "Fantasy"], releaseYear: "2017", type: "TV", description: "Asta and Yuno were abandoned at the same church on the same day." },
+    { animeId: "one-punch-man", animeName: "One Punch Man", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21087-B5DHjqZ3kW4b.jpg", totalOriginalEpisodes: 24, totalHindiDubbedEpisodes: 24, totalEnglishDubbedEpisodes: 24, status: "Completed", genre: ["Action", "Comedy"], releaseYear: "2015", type: "TV", description: "The seemingly ordinary and unimpressive Saitama has a rather unique hobby: being a hero." },
+    { animeId: "spy-x-family", animeName: "Spy x Family", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg", totalOriginalEpisodes: 37, totalHindiDubbedEpisodes: 37, totalEnglishDubbedEpisodes: 37, status: "Ongoing", genre: ["Comedy", "Action"], releaseYear: "2022", type: "TV", description: "World peace is at stake and secret agent Twilight must undergo his most difficult mission yet—pretend to be a family man." },
+    { animeId: "dr-stone", animeName: "Dr. Stone", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105333-GybuoSoOZfpH.jpg", totalOriginalEpisodes: 57, totalHindiDubbedEpisodes: 57, totalEnglishDubbedEpisodes: 57, status: "Ongoing", genre: ["Sci-Fi", "Adventure"], releaseYear: "2019", type: "TV", description: "One fateful day, all of humanity was petrified by a blinding flash of light." },
+    { animeId: "tokyo-revengers", animeName: "Tokyo Revengers", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120120-cWDmnmeEntSe.jpg", totalOriginalEpisodes: 50, totalHindiDubbedEpisodes: 50, totalEnglishDubbedEpisodes: 50, status: "Ongoing", genre: ["Action", "Drama"], releaseYear: "2021", type: "TV", description: "Takemichi Hanagaki's life is at its lowest point." },
+    { animeId: "fmab", animeName: "Fullmetal Alchemist: Brotherhood", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-nSWCgQlmOMtj.jpg", totalOriginalEpisodes: 64, totalHindiDubbedEpisodes: 64, totalEnglishDubbedEpisodes: 64, status: "Completed", genre: ["Action", "Drama"], releaseYear: "2009", type: "TV", description: "After a horrific alchemy experiment goes wrong in the Elric household, brothers Edward and Alphonse are left in a catastrophic new reality." },
+    { animeId: "steins-gate", animeName: "Steins;Gate", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-tIUXF2gfU8Sg.jpg", totalOriginalEpisodes: 24, totalHindiDubbedEpisodes: 0, totalEnglishDubbedEpisodes: 24, status: "Completed", genre: ["Sci-Fi", "Thriller"], releaseYear: "2011", type: "TV", description: "The self-proclaimed mad scientist Rintarou Okabe rents out a room in a rickety old building in Akihabara." },
+    { animeId: "sword-art-online", animeName: "Sword Art Online", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11757-SxYDUzdr9rh2.jpg", totalOriginalEpisodes: 96, totalHindiDubbedEpisodes: 96, totalEnglishDubbedEpisodes: 96, status: "Completed", genre: ["Action", "Adventure"], releaseYear: "2012", type: "TV", description: "In the year 2022, virtual reality has progressed by leaps and bounds." },
+    { animeId: "tokyo-ghoul", animeName: "Tokyo Ghoul", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg", totalOriginalEpisodes: 48, totalHindiDubbedEpisodes: 48, totalEnglishDubbedEpisodes: 48, status: "Completed", genre: ["Action", "Supernatural"], releaseYear: "2014", type: "TV", description: "Tokyo has become a cruel and merciless city—a place where vicious creatures called ghouls exist alongside humans." },
+    { animeId: "haikyuu", animeName: "Haikyuu!!", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20464-ooZUyBe4ptp9.png", totalOriginalEpisodes: 85, totalHindiDubbedEpisodes: 85, totalEnglishDubbedEpisodes: 85, status: "Completed", genre: ["Sports", "Comedy"], releaseYear: "2014", type: "TV", description: "Inspired after watching a volleyball ace nicknamed Little Giant in action." },
+    { animeId: "cyberpunk-edgerunners", animeName: "Cyberpunk: Edgerunners", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120377-ayZPoxiWt4Li.jpg", totalOriginalEpisodes: 10, totalHindiDubbedEpisodes: 10, totalEnglishDubbedEpisodes: 10, status: "Completed", genre: ["Sci-Fi", "Action"], releaseYear: "2022", type: "TV", description: "In a dystopia riddled with corruption and cybernetic implants, a talented but reckless street kid strives to become a mercenary outlaw." },
+    { animeId: "blue-lock", animeName: "Blue Lock", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137822-U8naszP96vzC.png", totalOriginalEpisodes: 24, totalHindiDubbedEpisodes: 24, totalEnglishDubbedEpisodes: 24, status: "Ongoing", genre: ["Sports", "Drama"], releaseYear: "2022", type: "TV", description: "After reflecting on the current state of Japanese soccer, the Japanese Football Association decides to hire the enigmatic and eccentric coach Jinpachi Ego." },
+    { animeId: "kaiju-no-8", animeName: "Kaiju No. 8", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153288-25FBfFJzEQ5O.jpg", totalOriginalEpisodes: 12, totalHindiDubbedEpisodes: 12, totalEnglishDubbedEpisodes: 12, status: "Ongoing", genre: ["Action", "Sci-Fi"], releaseYear: "2024", type: "TV", description: "Grotesque, Godzilla-like monsters called kaijuu have been appearing around Japan for many years." },
+    { animeId: "wind-breaker", animeName: "Wind Breaker", poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163270-wboZJp0ybwVK.jpg", totalOriginalEpisodes: 13, totalHindiDubbedEpisodes: 13, totalEnglishDubbedEpisodes: 13, status: "Ongoing", genre: ["Action", "Drama"], releaseYear: "2024", type: "TV", description: "Haruka Sakura wants nothing to do with weaklings—he's only interested in the strongest of the strong." }
+];
+
+/* --- LOGIC AND VARIABLES --- */
+let currentAnime = null;
+let currentLanguage = "original";
+let displayedEpisodesCount = 0;
+const EPISODES_PER_PAGE = 50;
+let generatedEpisodesList = []; // Array of episode objects
+let filteredEpisodesList = []; // Array of filtered episode objects
+
+let currentWatchEpisodeIndex = -1; // Keep track of opened episode index for Next/Prev
+
+// Views
+const listView = document.getElementById('aes-list-view');
+const detailView = document.getElementById('aes-detail-view');
+const watchView = document.getElementById('aes-watch-view');
+
+// Containers
+const animeGrid = document.getElementById('aes-anime-grid');
+const episodeListContainer = document.getElementById('aes-episode-list');
+
+// Inputs
+const searchInput = document.getElementById('aes-search-input');
+const epSearchInput = document.getElementById('aes-ep-search');
+const filterLang = document.getElementById('aes-filter-lang');
+const filterStatus = document.getElementById('aes-filter-status');
+const loadMoreBtn = document.getElementById('aes-load-more');
+
+window.aesHandlePlayClick = function() {
+    window.open('https://www.effectivecpmnetwork.com/t6cwy0a746?key=798da8154386b3117b395ff54f1c6e4e', '_blank');
+    
+    const pPlay = document.getElementById('aes-player-play-state');
+    const pLoad = document.getElementById('aes-player-loading-state');
+    const pError = document.getElementById('aes-player-error-state');
+    
+    if (pPlay) pPlay.style.display = 'none';
+    if (pError) pError.style.display = 'none';
+    if (pLoad) pLoad.style.display = 'flex';
+    
+    setTimeout(() => {
+        const checkLoad = document.getElementById('aes-player-loading-state');
+        const checkError = document.getElementById('aes-player-error-state');
+        if (checkLoad && checkLoad.style.display === 'flex') {
+            checkLoad.style.display = 'none';
+            if (checkError) checkError.style.display = 'flex';
+        }
+    }, 15000);
+};
+
+/** Initialize the module */
+function initAnimeEpisodeSystem() {
+    renderAnimeGrid(animeData);
+    setupEventListeners();
+    setupExistingWebsiteIntegration();
+    
+    // Hash routing catch for existing setups
+    if(window.location.hash.startsWith('#watch/')) {
+        const parts = window.location.hash.split('/');
+        // parts format: #watch, animeId, episodeCode, language
+        if(parts.length === 4) {
+             openWatchView(parts[1], parseInt(parts[2], 10), parts[3]);
+        }
+    }
+}
+
+/** 
+ * Episode Generator Function 
+ * Generates continuous episode objects based on language count
+ */
+function generateEpisodes(anime, language) {
+  let count = 0;
+  let languageLabel = "";
+
+  if (language === "hindi") {
+    count = anime.totalHindiDubbedEpisodes;
+    languageLabel = "Hindi Dubbed";
+  }
+
+  if (language === "english") {
+    count = anime.totalEnglishDubbedEpisodes;
+    languageLabel = "English Dubbed";
+  }
+
+  if (language === "original") {
+    count = anime.totalOriginalEpisodes;
+    languageLabel = "Original Audio";
+  }
+
+  const episodes = [];
+
+  for (let i = 1; i <= count; i++) {
+    const epCode = String(i).padStart(3, "0");
+
+    episodes.push({
+      episodeNumber: i,
+      episodeCode: epCode,
+      title: `${anime.animeName} Episode ${epCode} ${languageLabel}`,
+      language: language,
+      languageLabel: languageLabel,
+      quality: "HD",
+      watchUrl: `#watch/${anime.animeId}/${epCode}/${language}`
+    });
+  }
+
+  return episodes;
+}
+
+/** Render the anime cards on the catalog list view */
+function renderAnimeGrid(data) {
+    animeGrid.innerHTML = '';
+    if (data.length === 0) {
+        animeGrid.innerHTML = '<div class="aes-no-data">No anime found matching your filters.</div>';
+        return;
+    }
+
+    data.forEach(anime => {
+        const card = document.createElement('div');
+        card.className = 'aes-anime-card';
+        card.onclick = () => openAnimeDetails(anime.animeId);
+        
+        card.innerHTML = `
+            <img src="${anime.poster}" alt="${anime.animeName}" class="aes-anime-poster" onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+            <div class="aes-anime-info">
+                <h3 class="aes-anime-title" title="${anime.animeName}">${anime.animeName}</h3>
+                <div class="aes-anime-meta">
+                    <span>${anime.type || 'TV'} · ${anime.releaseYear || 'N/A'}</span>
+                    <span style="color:var(--aes-accent)">${anime.status}</span>
+                </div>
+            </div>
+        `;
+        animeGrid.appendChild(card);
+    });
+}
+
+/** Filter and search the anime grid */
+function filterAnimeList() {
+    const term = searchInput.value.toLowerCase();
+    const lang = filterLang.value;
+    const status = filterStatus.value.toLowerCase();
+
+    const filtered = animeData.filter(anime => {
+        // Search
+        const nameMatch = anime.animeName.toLowerCase().includes(term);
+        const genreMatch = anime.genre && anime.genre.some(g => g.toLowerCase().includes(term));
+        if (!nameMatch && !genreMatch) return false;
+
+        // Language Filter
+        if (lang === 'hindi' && anime.totalHindiDubbedEpisodes <= 0) return false;
+        if (lang === 'english' && anime.totalEnglishDubbedEpisodes <= 0) return false;
+        if (lang === 'original' && anime.totalOriginalEpisodes <= 0) return false;
+
+        // Status Filter
+        if (status !== 'all' && anime.status.toLowerCase() !== status) return false;
+
+        return true;
+    });
+
+    renderAnimeGrid(filtered);
+}
+
+/** Open details view for a specific anime id */
+function openAnimeDetails(id) {
+    const anime = animeData.find(a => a.animeId === id);
+    if (!anime) {
+        alert("Anime data not found in system.");
+        return;
+    }
+
+    currentAnime = anime;
+    listView.classList.add('aes-hidden');
+    watchView.classList.add('aes-hidden');
+    detailView.classList.remove('aes-hidden');
+    
+    // Default Tab
+    currentLanguage = "original";
+    updateTabUI();
+    document.getElementById('aes-ep-search').value = "";
+
+    renderAnimeDetailsBox(anime, 'aes-detail-header');
+    
+    // Generate and show episodes
+    triggerEpisodeListGeneration();
+    
+    scrollToTop();
+}
+
+/** Generates episodes list array based on selected language and search term */
+function triggerEpisodeListGeneration() {
+    // Generate complete continuous episode sequence 
+    generatedEpisodesList = generateEpisodes(currentAnime, currentLanguage);
+    
+    // Filter the generated list by episode search input
+    const epSearchVal = epSearchInput.value.toLowerCase().trim();
+    
+    if (epSearchVal !== "") {
+        filteredEpisodesList = generatedEpisodesList.filter(ep => {
+            return ep.episodeCode.includes(epSearchVal) || 
+                   ep.title.toLowerCase().includes(epSearchVal) ||
+                   ep.languageLabel.toLowerCase().includes(epSearchVal);
+        });
+    } else {
+        filteredEpisodesList = [...generatedEpisodesList];
+    }
+
+    displayedEpisodesCount = 0;
+    episodeListContainer.innerHTML = '';
+    
+    if (filteredEpisodesList.length === 0) {
+        episodeListContainer.innerHTML = `<div class="aes-no-data">No episodes available in this language or search criteria.</div>`;
+        loadMoreBtn.classList.add('aes-hidden');
+    } else {
+        loadMoreEpisodes();
+    }
+}
+
+/** Renders episode cards in chunks (pagination/load more) */
+function loadMoreEpisodes() {
+    const end = Math.min(displayedEpisodesCount + EPISODES_PER_PAGE, filteredEpisodesList.length);
+    
+    for (let i = displayedEpisodesCount; i < end; i++) {
+        const ep = filteredEpisodesList[i];
+        
+        const card = document.createElement('a');
+        card.href = ep.watchUrl;
+        card.className = 'aes-episode-card';
+        card.onclick = (e) => {
+            e.preventDefault();
+            let originIndex = generatedEpisodesList.findIndex(x => x.episodeNumber === ep.episodeNumber);
+            renderWatchView(ep, originIndex);
+        };
+        
+        card.innerHTML = `
+            <div>
+                <div class="aes-ep-num">Episode ${ep.episodeCode}</div>
+                <div class="aes-ep-title" title="${ep.title}">${ep.title}</div>
+                <div class="aes-ep-meta">
+                    <span class="aes-ep-quality">${ep.quality}</span>
+                    <span style="color:var(--aes-text-muted); font-size:11px;">${ep.languageLabel}</span>
+                </div>
+            </div>
+            <div class="aes-watch-btn">Watch Now</div>
+        `;
+        episodeListContainer.appendChild(card);
+    }
+    
+    displayedEpisodesCount = end;
+
+    if (displayedEpisodesCount >= filteredEpisodesList.length) {
+        loadMoreBtn.classList.add('aes-hidden');
+    } else {
+        loadMoreBtn.classList.remove('aes-hidden');
+    }
+}
+
+/** Opens the watch view and plays selected episode */
+function openWatchView(animeId, episodeNumber, language) {
+    const anime = animeData.find(a => a.animeId === animeId);
+    if (!anime) return;
+    currentAnime = anime;
+    currentLanguage = language;
+    generatedEpisodesList = generateEpisodes(currentAnime, currentLanguage);
+    
+    const epIndex = generatedEpisodesList.findIndex(e => e.episodeNumber === episodeNumber);
+    if(epIndex !== -1) {
+        renderWatchView(generatedEpisodesList[epIndex], epIndex);
+    }
+}
+
+/** Render Watch View with player, buttons, related episodes */
+function renderWatchView(episode, indexInList) {
+    listView.classList.add('aes-hidden');
+    detailView.classList.add('aes-hidden');
+    watchView.classList.remove('aes-hidden');
+    
+    currentWatchEpisodeIndex = indexInList;
+    window.location.hash = episode.watchUrl;
+    
+    document.getElementById('aes-watch-title').textContent = episode.title;
+    
+    // Anime Info Box setup
+    renderAnimeDetailsBox(currentAnime, 'aes-watch-detail-header');
+    
+    // Prev / Next Logic
+    const btnPrev = document.getElementById('aes-btn-prev');
+    const btnNext = document.getElementById('aes-btn-next');
+    
+    if(currentWatchEpisodeIndex > 0) {
+        btnPrev.disabled = false;
+        btnPrev.onclick = () => renderWatchView(generatedEpisodesList[currentWatchEpisodeIndex - 1], currentWatchEpisodeIndex - 1);
+    } else {
+        btnPrev.disabled = true;
+        btnPrev.onclick = null;
+    }
+    
+    if(currentWatchEpisodeIndex < generatedEpisodesList.length - 1) {
+        btnNext.disabled = false;
+        btnNext.onclick = () => renderWatchView(generatedEpisodesList[currentWatchEpisodeIndex + 1], currentWatchEpisodeIndex + 1);
+    } else {
+        btnNext.disabled = true;
+        btnNext.onclick = null;
+    }
+    
+    // Generate related episodes (nearby logic)
+    renderRelatedEpisodes(currentWatchEpisodeIndex);
+    
+    scrollToTop();
+}
+
+/** Render 8 continuous/nearby related episodes */
+function renderRelatedEpisodes(currentIndex) {
+    const relatedContainer = document.getElementById('aes-related-episodes');
+    relatedContainer.innerHTML = '';
+    
+    let startIndex = Math.max(0, currentIndex - 4);
+    let endIndex = Math.min(generatedEpisodesList.length - 1, startIndex + 7);
+    
+    // Adjust start index if end index is at the border to always show 8 if possible
+    if (endIndex - startIndex < 7) {
+        startIndex = Math.max(0, endIndex - 7);
+    }
+    
+    for (let i = startIndex; i <= endIndex; i++) {
+        if (i === currentIndex) continue; // skip currently playing
+        
+        const ep = generatedEpisodesList[i];
+        const card = document.createElement('a');
+        card.href = ep.watchUrl;
+        card.className = 'aes-episode-card';
+        card.onclick = (e) => {
+            e.preventDefault();
+            renderWatchView(ep, i);
+        };
+        
+        card.innerHTML = `
+            <div>
+                <div class="aes-ep-num">Episode ${ep.episodeCode}</div>
+                <div class="aes-ep-title" title="${ep.title}">${ep.title}</div>
+            </div>
+            <div class="aes-watch-btn" style="padding: 4px; font-size:12px;">Watch</div>
+        `;
+        relatedContainer.appendChild(card);
+    }
+}
+
+/** Helper to render Anime Header/Synopsis Box */
+function renderAnimeDetailsBox(anime, containerId) {
+    const header = document.getElementById(containerId);
+    header.innerHTML = `
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <img src="${anime.poster}" alt="${anime.animeName}" class="aes-detail-poster" onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+            <div class="aes-detail-info" style="flex:1;">
+                <h2 style="font-size:24px; margin-bottom:10px;">${anime.animeName}</h2>
+                <div class="aes-badges">
+                    <span class="aes-badge status">${anime.status}</span>
+                    <span class="aes-badge type">${anime.type || 'TV'}</span>
+                    <span class="aes-badge" style="background:#555;">${anime.releaseYear || 'Unknown'}</span>
+                    ${anime.genre ? anime.genre.map(g => `<span class="aes-badge" style="background:var(--aes-accent)">${g}</span>`).join('') : ''}
+                </div>
+                <div class="aes-desc">${anime.description || 'No description available for this title.'}</div>
+                <div class="aes-stats-grid">
+                    <div><span>${anime.totalOriginalEpisodes}</span>Orig. Audio</div>
+                    <div><span>${anime.totalEnglishDubbedEpisodes}</span>Eng. Dub</div>
+                    <div><span>${anime.totalHindiDubbedEpisodes}</span>Hin. Dub</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/** Updates active state on language tabs */
+function updateTabUI() {
+    const tabs = document.querySelectorAll('.aes-tab');
+    tabs.forEach(tab => {
+        if (tab.getAttribute('data-lang') === currentLanguage) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+}
+
+function scrollToTop() {
+    const moduleEl = document.getElementById('animeEpisodeSystem');
+    if(moduleEl) {
+        const y = moduleEl.getBoundingClientRect().top + window.scrollY - 20;
+        window.scrollTo({top: y, behavior: 'smooth'});
+    }
+}
+
+/** Global event listeners */
+function setupEventListeners() {
+    // List View Filters
+    document.getElementById('aes-search-btn').addEventListener('click', filterAnimeList);
+    searchInput.addEventListener('input', filterAnimeList);
+    filterLang.addEventListener('change', filterAnimeList);
+    filterStatus.addEventListener('change', filterAnimeList);
+
+    // Detail View Back
+    document.getElementById('aes-back-btn').addEventListener('click', () => {
+        detailView.classList.add('aes-hidden');
+        listView.classList.remove('aes-hidden');
+        currentAnime = null;
+        window.location.hash = '';
+    });
+    
+    // Watch View Back
+    document.getElementById('aes-watch-back-btn').addEventListener('click', () => {
+        watchView.classList.add('aes-hidden');
+        detailView.classList.remove('aes-hidden');
+        window.location.hash = '';
+        scrollToTop();
+    });
+
+    // Detail View Lang Tabs
+    document.querySelectorAll('.aes-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            currentLanguage = e.target.getAttribute('data-lang');
+            updateTabUI();
+            document.getElementById('aes-ep-search').value = ""; // clear ep search on tab change
+            triggerEpisodeListGeneration();
+        });
+    });
+
+    // Episodes Load More
+    loadMoreBtn.addEventListener('click', loadMoreEpisodes);
+
+    // Episode Search inside Detail View
+    epSearchInput.addEventListener('input', () => {
+        triggerEpisodeListGeneration(); 
+    });
+}
+
+/** 
+ * INTEGRATION HOOK FOR EXISTING WEBSITE:
+ * Find any element with `data-anime-id="xyz"` and add a click event 
+ * to open the module's detail view for that anime.
+ */
+function setupExistingWebsiteIntegration() {
+    const externalCards = document.querySelectorAll('[data-anime-id]');
+    externalCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            const id = card.getAttribute('data-anime-id');
+            // Check if element exists in DOM, scroll to it
+            openAnimeDetails(id);
+        });
+    });
+}
+
+// Start
+document.addEventListener('DOMContentLoaded', initAnimeEpisodeSystem);
+</script>
+<!-- ========================================== -->
+<!-- UNIVERSAL ANIME EPISODE SYSTEM MODULE END  -->
+<!-- ========================================== -->

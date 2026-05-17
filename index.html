@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeVerse Watch | Free Anime Episodes</title>
+    <meta name="description" content="Watch your favorite anime episodes online in high quality. English Subbed and Hindi Dub series, movies, and more.">
+    <meta property="og:title" content="AnimeVerse Watch">
+    <meta property="og:description" content="Watch the latest subbed and Hindi Dub anime episodes freely and legally.">
+    
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === VARIABLES & RESET === */
+        :root {
+            --bg-color: #f1f2f6;
+            --container-bg: #ffffff;
+            --text-dark: #2f3542;
+            --text-light: #747d8c;
+            --primary-accent: #ff4757;
+            --primary-accent-hover: #e03241;
+            --header-bg: #1e272e;
+            --header-text: #ffffff;
+            --badge-dubbed: #2ed573;
+            --badge-subbed: #1e90ff;
+            --font-headings: 'Oswald', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            --border-radius: 6px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background-color: var(--bg-color); color: var(--text-dark); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        button, input { font-family: inherit; }
+
+        /* === LAYOUT === */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+        .main-content { width: 70%; padding: 0 15px; }
+        .sidebar { width: 30%; padding: 0 15px; }
+        
+        @media (max-width: 992px) {
+            .main-content { width: 100%; }
+            .sidebar { width: 100%; margin-top: 30px; }
+        }
+
+        /* === HEADER & NAV === */
+        header { background: var(--header-bg); color: var(--header-text); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; }
+        .logo a { font-family: var(--font-headings); font-size: 28px; font-weight: 700; color: var(--header-text); text-transform: uppercase; letter-spacing: 1px; }
+        .logo a span { color: var(--primary-accent); }
+        .brand-logo { height: 40px; width: 40px; }
+        
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { font-family: var(--font-headings); font-size: 16px; text-transform: uppercase; font-weight: 500; }
+        .nav-links a:hover { color: var(--primary-accent); }
+        
+        .search-box { display: flex; background: rgba(255,255,255,0.1); border-radius: 20px; overflow: hidden; }
+        .search-box input { border: none; background: transparent; color: #fff; padding: 8px 15px; outline: none; width: 200px; }
+        .search-box input::placeholder { color: #aaa; }
+        .search-box button { background: var(--primary-accent); border: none; color: white; padding: 0 15px; cursor: pointer; }
+        .search-box button:hover { background: var(--primary-accent-hover); }
+
+        .mobile-menu-btn { display: none; font-size: 24px; cursor: pointer; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0 10px; }
+            .row { margin: 0 -10px; }
+            .main-content, .sidebar { padding: 0 10px; }
+            .content-box { padding: 15px; margin-bottom: 20px; }
+            
+            .nav-links { display: none; flex-direction: column; width: 100%; background: var(--header-bg); position: absolute; top: 100%; left: 0; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: block; font-size: 20px; }
+            .search-box { display: none; }
+            .nav-links .search-box { display: flex; margin: 10px 20px; width: auto; }
+            .logo a { font-size: 20px; letter-spacing: 0; gap: 6px !important; }
+            .brand-logo { height: 32px; width: 32px; }
+            .navbar { padding: 12px 10px; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 5px; }
+            .row { margin: 0 -5px; }
+            .main-content, .sidebar { padding: 0 5px; }
+            .content-box { padding: 10px; border-radius: 0; }
+            .player-wrapper { border-radius: 0; margin: 0 -10px 15px -10px; width: calc(100% + 20px); }
+            
+            .logo a { font-size: 18px; }
+            .brand-logo { height: 28px; width: 28px; }
+            .mobile-menu-btn { font-size: 18px; }
+            .navbar { padding: 10px 5px; }
+        }
+
+        /* === ADS PLACEHOLDERS === */
+        .ad-placeholder { background: #1e1e1e; border: 2px dashed #444; color: #888; text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: var(--font-headings); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .ad-placeholder span { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .ad-placeholder small { font-size: 12px; }
+        .ad-top { width: 100%; max-width: 728px; height: 90px; margin: 20px auto; }
+        .ad-sidebar { width: 100%; max-width: 300px; height: 250px; margin: 0 auto 30px auto; }
+        .ad-content { width: 100%; max-width: 300px; height: 250px; margin: 30px auto; }
+
+        /* Floating Mobile Ad (320x50 standard) */
+        #floating-ad { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 320px; height: 50px; background: #1e1e1e; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 99; display: none; margin-bottom: 0; }
+        .close-ad { position: absolute; top: -10px; right: -10px; background: var(--primary-accent); color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; cursor: pointer; font-size: 12px; z-index: 10; font-weight: bold; }
+        
+        @media (max-width: 768px) { 
+            #floating-ad { display: flex; } 
+            .ad-top { max-width: 320px; height: 50px; } /* Fallback to 320x50 on mobile */
+        }
+
+        /* Popup Ad */
+        #popup-ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; align-items: center; justify-content: center; }
+        .popup-content { width: 90%; max-width: 600px; height: 400px; background: #fff; position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+        .popup-content .close-ad { top: -15px; right: -15px; width: 30px; height: 30px; line-height: 30px; font-size: 16px; }
+
+        /* === HERO SECTION === */
+        .hero { background: linear-gradient(135deg, var(--header-bg) 0%, #3e4854 100%); color: #fff; padding: 60px 0; text-align: center; margin-bottom: 40px; }
+        .hero h1 { font-family: var(--font-headings); font-size: 48px; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        .hero p { font-size: 18px; color: #ccc; margin-bottom: 25px; }
+        .btn { display: inline-block; padding: 12px 25px; background: var(--primary-accent); color: #fff; border: none; border-radius: 30px; font-family: var(--font-headings); font-size: 18px; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 6px rgba(255, 71, 87, 0.3); }
+        .btn:hover { background: var(--primary-accent-hover); transform: translateY(-2px); }
+
+        /* === TYPOGRAPHY & BLOCKS === */
+        .section-title { font-family: var(--font-headings); font-size: 24px; text-transform: uppercase; border-left: 4px solid var(--primary-accent); padding-left: 10px; margin-bottom: 20px; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
+        .content-box { background: var(--container-bg); padding: 25px; border-radius: var(--border-radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
+
+        /* === ANIME CARDS === */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+            .card-info { padding: 10px; }
+            .card-title { font-size: 14px; }
+            .card-meta { font-size: 11px; }
+            .card-info div[style*="font-size: 11px;"] { font-size: 10px !important; margin-bottom: 3px !important; }
+        }
+        
+        @media (max-width: 480px) { 
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+            .card-info { padding: 8px; }
+            .card-title { font-size: 13px; }
+            .card-meta { font-size: 10px; }
+            .ep-badge { font-size: 10px; padding: 2px 5px; }
+            .type { font-size: 9px; padding: 1px 4px; }
+        }
+        
+        .anime-card { background: var(--container-bg); border-radius: var(--border-radius); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; transition: var(--transition); }
+        .anime-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+        
+        .card-img { width: 100%; aspect-ratio: 3/4; position: relative; background: #333; overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .anime-card:hover .card-img img { transform: scale(1.05); opacity: 0.8; }
+        
+        .play-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: var(--transition); pointer-events: none; }
+        .play-overlay i { font-size: 40px; color: #fff; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); transform: scale(0.5); transition: var(--transition); }
+        .anime-card:hover .play-overlay { opacity: 1; }
+        .anime-card:hover .play-overlay i { transform: scale(1); }
+        
+        .lang-badge { position: absolute; top: 10px; left: 10px; padding: 4px 8px; font-size: 11px; font-weight: bold; color: #fff; border-radius: 4px; z-index: 2; text-transform: uppercase; }
+        .dub { background: var(--badge-dubbed); }
+        .sub { background: var(--badge-subbed); }
+        
+        .ep-badge { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #fff; padding: 2px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; z-index: 2; }
+        
+        .card-info { padding: 15px; }
+        .card-title { font-family: var(--font-headings); font-size: 16px; font-weight: 500; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-dark); transition: var(--transition); }
+        .anime-card:hover .card-title { color: var(--primary-accent); }
+        .card-meta { font-size: 12px; color: var(--text-light); display: flex; justify-content: space-between; }
+
+        /* === WATCH PAGE === */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .player-wrapper { background: #000; width: 100%; aspect-ratio: 16/9; position: relative; border-radius: var(--border-radius); overflow: hidden; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; text-align: center; padding: 0; }
+        .player-wrapper i { font-size: 60px; color: var(--text-light); margin-bottom: 15px; }
+        .player-wrapper h3 { font-family: var(--font-headings); }
+        .player-wrapper p { font-size: 14px; color: #aaa; margin-top: 10px; }
+        
+        .watch-controls { display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .control-btn { background: #e0e0e0; border: none; padding: 10px 20px; font-family: var(--font-headings); text-transform: uppercase; border-radius: 4px; cursor: pointer; color: var(--text-dark); display: flex; align-items: center; gap: 8px; }
+        .control-btn:hover { background: #d0d0d0; }
+        .control-btn.dl { background: var(--primary-accent); color: white; }
+        .control-btn.dl:hover { background: var(--primary-accent-hover); }
+        
+        .ep-details h1 { font-family: var(--font-headings); font-size: 24px; margin-bottom: 15px; }
+        .meta-list { list-style: none; display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: var(--border-radius); border: 1px solid #eee; }
+        .meta-list li { font-size: 14px; }
+        .meta-list strong { color: var(--text-dark); }
+        
+        /* === SIDEBAR WIDGETS === */
+        .widget { background: var(--container-bg); padding: 20px; border-radius: var(--border-radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .widget-title { font-family: var(--font-headings); font-size: 18px; text-transform: uppercase; border-bottom: 2px solid var(--primary-accent); padding-bottom: 10px; margin-bottom: 15px; }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { background: #f1f2f6; padding: 5px 12px; font-size: 13px; color: var(--text-dark); border-radius: 15px; transition: var(--transition); display: inline-block; cursor: pointer; }
+        .tag:hover { background: var(--primary-accent); color: white; }
+        
+        .side-list li { border-bottom: 1px dashed #ddd; padding: 10px 0; }
+        .side-list li:last-child { border-bottom: none; }
+        .side-list a { display: flex; gap: 10px; align-items: center; }
+        .side-list img { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
+        .side-list .side-info h4 { font-size: 14px; font-weight: 500; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .side-list .side-info p { font-size: 11px; color: var(--text-light); }
+
+        /* === GENRES PAGE === */
+        .genre-box { display: flex; align-items: center; justify-content: center; height: 100px; background: var(--container-bg); border-radius: var(--border-radius); box-shadow: 0 2px 10px rgba(0,0,0,0.05); font-family: var(--font-headings); font-size: 20px; text-transform: uppercase; border-bottom: 3px solid var(--primary-accent); transition: var(--transition); cursor: pointer; }
+        .genre-box:hover { background: var(--primary-accent); color: white; transform: translateY(-3px); }
+
+        /* === TABS & EPISODES CSS === */
+        .lang-tabs { display: flex; gap: 10px; margin-top: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; overflow-x: auto; }
+        .lang-tab { background: transparent; border: none; font-family: var(--font-headings); font-size: 16px; text-transform: uppercase; color: var(--text-light); padding: 5px 15px; cursor: pointer; border-bottom: 3px solid transparent; transition: var(--transition); white-space: nowrap; }
+        .lang-tab:hover { color: var(--text-dark); }
+        .lang-tab.active { color: var(--primary-accent); border-bottom-color: var(--primary-accent); }
+        
+        .ep-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
+        .ep-btn { background: #f1f2f6; color: var(--text-dark); padding: 10px 5px; text-align: center; border-radius: 4px; font-weight: bold; border: 1px solid #ddd; transition: var(--transition); font-size: 14px; }
+        .ep-btn:hover, .ep-btn.active { background: var(--primary-accent); color: white; border-color: var(--primary-accent); box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3); }
+
+        /* === CONTACT PAGE === */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-family: var(--font-headings); text-transform: uppercase; }
+        .form-control { width: 100%; left: 0; padding: 12px 15px; border: 1px solid #ccc; border-radius: 4px; outline: none; font-family: inherit; font-size: 16px; }
+        .form-control:focus { border-color: var(--primary-accent); }
+        textarea.form-control { resize: vertical; min-height: 150px; }
+
+        /* === PAGINATION === */
+        .pagination { display: flex; justify-content: center; margin-top: 30px; gap: 5px; flex-wrap: wrap; }
+        .page-btn { display: inline-block; padding: 8px 15px; background: #fff; border: 1px solid #ddd; color: var(--text-dark); border-radius: 4px; cursor: pointer; font-family: var(--font-headings); transition: var(--transition); }
+        .page-btn:hover, .page-btn.active { background: var(--primary-accent); color: white; border-color: var(--primary-accent); }
+
+        /* === FOOTER === */
+        footer { background: var(--header-bg); color: var(--header-text); padding: 50px 0 20px; margin-top: 50px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .footer-logo { font-family: var(--font-headings); font-size: 24px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+        .footer-logo span { color: var(--primary-accent); }
+        .footer-desc { color: #aaa; font-size: 14px; margin-bottom: 20px; }
+        .footer-title { font-family: var(--font-headings); font-size: 18px; text-transform: uppercase; margin-bottom: 20px; color: #fff; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: #aaa; font-size: 14px; }
+        .footer-links a:hover { color: var(--primary-accent); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center; color: #aaa; font-size: 14px; }
+        .footer-bottom a { color: #fff; margin: 0 10px; }
+        
+        .static-content h1, .static-content h2 { font-family: var(--font-headings); margin: 20px 0 10px; color: var(--primary-accent); }
+        .static-content p { margin-bottom: 15px; }
+
+    
+        .desktop-ad { display: block; }
+        .mobile-ad { display: none; }
+        @media (max-width: 768px) {
+            .desktop-ad { display: none !important; }
+            .mobile-ad { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">
+                <a href="#home" style="display: flex; align-items: center; gap: 10px;">
+                    <img src="/logo.png" alt="AnimeVerse Logo" class="brand-logo" style="border-radius: 5px; object-fit: cover;">
+                    <div>AnimeVerse <span>Watch</span></div>
+                </a>
+            </div>
+            
+            <nav class="nav-links" id="nav-menu">
+                <div class="search-box mobile-search">
+                    <input type="text" id="mobile-search-input" placeholder="Search anime...">
+                    <button onclick="handleSearch('mobile')"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+                <a href="#home" onclick="toggleMenu()">Home</a>
+                <a href="#episodes" onclick="toggleMenu()">Animes</a>
+                <a href="#genres" onclick="toggleMenu()">Genres</a>
+                <a href="#contact" onclick="toggleMenu()">Contact</a>
+            </nav>
+            
+            <div class="search-box desktop-search">
+                <input type="text" id="desktop-search-input" placeholder="Search anime...">
+                <button onclick="handleSearch('desktop')"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            
+            <div class="mobile-menu-btn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Top Ad Placeholder -->
+    <div class="container">
+        <div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>
+
+    <!-- Main Layout -->
+    <div class="layout container">
+        <div class="row">
+            <!-- Content Area (Router renders here) -->
+            <main class="main-content" id="app">
+                <!-- Javascript will inject pages here -->
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                
+                <div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>
+
+                <div class="widget">
+                    <h3 class="widget-title">Latest Added</h3>
+                    <ul class="side-list" id="sidebar-latest">
+                        <!-- Injected -->
+                    </ul>
+                </div>
+                
+                <div class="widget">
+                    <h3 class="widget-title">Genres</h3>
+                    <div class="tag-cloud" id="sidebar-genres">
+                        <!-- Injected -->
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">AnimeVerse <span>Watch</span></div>
+                    <p class="footer-desc">Your ultimate destination for high-quality anime streaming. Discover the latest subbed and Hindi Dub episodes and anime movies perfectly organized for you.</p>
+                </div>
+                <div>
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#episodes">Watch Your Favorite Hindi dub anime</a></li>
+                        <li><a href="#genres">Genres</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="footer-title">Legal & Info</h3>
+                    <ul class="footer-links">
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#dmca">DMCA / Copyright</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AnimeVerse Watch Demo. All Rights Reserved.</p>
+                <p style="margin-top: 10px; font-size: 12px;">Disclaimer: This website is a template. It does not host any copyrighted material. Please replace placeholders with legal content.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Mobile Ad -->
+    <div id="floating-ad" style="position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 320px; height: 50px; z-index: 99; display: flex;">
+            <div class="close-ad" onclick="this.parentElement.style.display='none'" style="position: absolute; top: -10px; right: -10px; background: var(--primary-accent); color: #fff; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; cursor: pointer; font-size: 12px; z-index: 10; font-weight: bold;"><i class="fa-solid fa-xmark"></i></div>
+            <iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = {    &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;,    &#39;format&#39; : &#39;iframe&#39;,    &#39;height&#39; : 50,    &#39;width&#39; : 320,    &#39;params&#39; : {}  };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no"></iframe>
+        </div>
+
+    <!-- JavaScript Data and Router -->
+    <script>
+        /* === DATA GENERATION === */
+        const animes = [
+            { id: "wistoria", title: "Wistoria: Wand and Sword", genre: "Action", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx174576-tpKcHG0eO6CS.jpg", description: "Will Serfort dreams of keeping his promise to a childhood friend by becoming a Magia Vander... Watch Wistoria Hindi Dub." },
+            { id: "angel-next-door", title: "The Angel Next Door Spoils Me Rotten", genre: "Romance", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143338-zhyDVYgEzsm5.png", description: "Amane lives alone in an apartment, and the most beautiful girl in school, Mahiru, lives just next door. Watch The Angel Next Door Hindi Dub." },
+            { id: "baki-dou", title: "Baki-Dou: The Invincible Samurai", genre: "Action", epsHindi: 24, epsEnglish: 24, epsSubbed: 24, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97888-tdZ1r7qN1DRs.jpg", description: "Baki Dou continues the story of Baki Hanma as he faces new challenges. Stream Baki Dou Hindi Dub." },
+            { id: "captain-tsubasa", title: "Captain Tsubasa", genre: "Sports", epsHindi: 52, epsEnglish: 52, epsSubbed: 52, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b2116-ajWg3wcwvb2q.jpg", description: "The story of Captain Tsubasa, a soccer prodigy. Watch Captain Tsubasa Hindi Dub." },
+            { id: "release-that-witch", title: "Release That Witch", genre: "Fantasy", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/b108152-QG8LtVNX5ox2.png", description: "An engineer reincarnates into a prince's body and uses witches to solve problems. Watch Release That Witch Hindi Dub." },
+            { id: "rooster-fighter", title: "Rooster Fighter", genre: "Action", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx127554-qXczrBrFMXBM.jpg", description: "A rooster saves the world. Watch Rooster Fighter Hindi Dub." },
+            { id: "liar-game", title: "Liar Game", genre: "Mystery", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx31649-zKUMKIrXO8u5.jpg", description: "Nao Kanzaki gets caught up in the Liar Game. Watch Liar Game Hindi Dub." },
+            { id: "marriagetoxin", title: "Marriagetoxin", genre: "Action", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx147329-ZaM4EOAn0Bgn.jpg", description: "An assassin wants to get married. Watch Marriagetoxin Hindi Dub." },
+            { id: "eren-the-southpaw", title: "Eren the Southpaw", genre: "Drama", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx109228-q3LtFVOCeGo5.jpg", description: "Eren the Southpaw story. Watch in Hindi Dub." },
+            { id: "steel-ball-run", title: "Steel Ball Run: JoJo", genre: "Adventure", epsHindi: 24, epsEnglish: 24, epsSubbed: 24, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx31706-lRncu9VbcBB7.png", description: "JoJo's Bizarre Adventure Part 7. Watch Steel Ball Run Hindi Dub." },
+            { id: "one-piece", title: "One Piece", genre: "Action", epsHindi: 1162, epsEnglish: 1083, epsSubbed: 1106, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg", description: "Gol D. Roger was known as the Pirate King. After his death, his wealth went up for grabs. Follow Monkey D. Luffy as he tries to find the legendary treasure! Watch all One Piece Hindi Dub episodes here." },
+            { id: "demon-slayer", title: "Demon Slayer", genre: "Action", epsHindi: 63, epsEnglish: 63, epsSubbed: 63, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21612-d5zrx9CWkxNl.png", description: "After his family is viciously murdered, Tanjiro Kamado resolves to become a Demon Slayer. Available in Hindi Dub." },
+            { id: "naruto-shippuden", title: "Naruto Shippuden", genre: "Adventure", epsHindi: 500, epsEnglish: 500, epsSubbed: 500, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1735-kGfVm0YqCPcu.png", description: "It has been two and a half years since Naruto Uzumaki left Konohagakure. Watch Naruto Shippuden Hindi Dub." },
+            { id: "naruto", title: "Naruto", genre: "Adventure", epsHindi: 220, epsEnglish: 220, epsSubbed: 220, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-dE6UHbFFg1A5.jpg", description: "Moments prior to Naruto Uzumaki's birth, the Nine-Tailed Fox attacked Konohagakure. Stream Naruto Hindi Dub." },
+            { id: "my-hero-academia", title: "My Hero Academia", genre: "Action", epsHindi: 138, epsEnglish: 148, epsSubbed: 159, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21459-nYh85uj2Fuwr.jpg", description: "In a world where eighty percent of the population has some kind of super-powered \"quirk,\" Izuku was unlucky. Watch MHA Hindi Dub." },
+            { id: "chainsaw-man", title: "Chainsaw Man", genre: "Supernatural", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127230-DdP4vAdssLoz.png", description: "Denji has a simple dream: to live a happy and peaceful life. Stream Chainsaw Man Hindi Dub." },
+            { id: "solo-leveling", title: "Solo Leveling", genre: "Fantasy", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151807-it355ZgzquUd.png", description: "Known as the Weakest Hunter of All Mankind, E-rank hunter Jinwoo Sung's contribution to raids amounts to trying not to get killed. Watch Solo Leveling in Hindi Dub." },
+            { id: "jujutsu-kaisen", title: "Jujutsu Kaisen", genre: "Supernatural", epsHindi: 47, epsEnglish: 47, epsSubbed: 47, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg", description: "A boy swallows a cursed talisman—the finger of a demon—and becomes cursed himself. Watch JJK Hindi Dub episodes." },
+            { id: "attack-on-titan", title: "Attack on Titan", genre: "Action", epsHindi: 89, epsEnglish: 89, epsSubbed: 89, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-buvcRTBx4NSm.jpg", description: "Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called titans. AOT Hindi Dub." },
+            { id: "boruto", title: "Boruto: Naruto Next Generations", genre: "Action", epsHindi: 293, epsEnglish: 293, epsSubbed: 293, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97938-BnF6M5yTaNB1.jpg", description: "Boruto is the son of the 7th Hokage. Following in his father's footsteps. Boruto Hindi Dub available." },
+            { id: "dragon-ball-z", title: "Dragon Ball Z", genre: "Action", epsHindi: 291, epsEnglish: 291, epsSubbed: 291, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx813-ZhnFNOeCU5dQ.png", description: "Goku is back with his new son, Gohan, but just when things are getting settled down, the adventures continue. DBZ Hindi Dub." },
+            { id: "dragon-ball-super", title: "Dragon Ball Super", genre: "Action", epsHindi: 131, epsEnglish: 131, epsSubbed: 131, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21175-EH06qlfF8TnB.jpg", description: "With Majin Buu defeated, Goku has taken a completely new role as a radish farmer. Stream DBS Hindi Dub." },
+            { id: "bleach", title: "Bleach", genre: "Action", epsHindi: 366, epsEnglish: 366, epsSubbed: 366, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx269-d2GmRkJbMopq.png", description: "Ichigo Kurosaki is an ordinary high schooler—until his family is attacked by a Hollow. Watch Bleach Hindi Dub." },
+            { id: "hunter-x-hunter", title: "Hunter x Hunter", genre: "Adventure", epsHindi: 148, epsEnglish: 148, epsSubbed: 148, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx136-gj0bbCpDNrKG.jpg", description: "Hunter x Hunter is set in a world where Hunters exist to perform all manner of dangerous tasks. HxH Hindi Dub." },
+            { id: "death-note", title: "Death Note", genre: "Mystery", epsHindi: 37, epsEnglish: 37, epsSubbed: 37, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-kUgkcrfOrkUM.jpg", description: "A genius high school student discovers a notebook that allows him to kill anyone whose name and face he knows. Death Note Hindi Dub." },
+            { id: "black-clover", title: "Black Clover", genre: "Fantasy", epsHindi: 170, epsEnglish: 170, epsSubbed: 170, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-fyh8o7gNbha0.png", description: "Asta and Yuno were abandoned at the same church on the same day. Watch Black Clover Hindi Dub." },
+            { id: "one-punch-man", title: "One Punch Man", genre: "Action", epsHindi: 24, epsEnglish: 24, epsSubbed: 24, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21087-B5DHjqZ3kW4b.jpg", description: "The seemingly ordinary and unimpressive Saitama has a rather unique hobby: being a hero. OPM Hindi Dub." },
+            { id: "spy-x-family", title: "Spy x Family", genre: "Comedy", epsHindi: 37, epsEnglish: 37, epsSubbed: 37, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg", description: "World peace is at stake and secret agent Twilight must undergo his most difficult mission yet. Spy x Family Hindi Dub." },
+            { id: "dr-stone", title: "Dr. Stone", genre: "Sci-Fi", epsHindi: 57, epsEnglish: 57, epsSubbed: 57, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105333-GybuoSoOZfpH.jpg", description: "One fateful day, all of humanity was petrified by a blinding flash of light. Watch Dr. Stone Hindi Dub." },
+            { id: "tokyo-revengers", title: "Tokyo Revengers", genre: "Action", epsHindi: 50, epsEnglish: 50, epsSubbed: 50, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120120-cWDmnmeEntSe.jpg", description: "Takemichi Hanagaki's life is at its lowest point. Watch Tokyo Revengers Hindi Dub." },
+            { id: "fmab", title: "Fullmetal Alchemist: Brotherhood", genre: "Action", epsHindi: 64, epsEnglish: 64, epsSubbed: 64, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-nSWCgQlmOMtj.jpg", description: "After a horrific alchemy experiment goes wrong in the Elric household. FMAB Hindi Dub." },
+            { id: "steins-gate", title: "Steins;Gate", genre: "Sci-Fi", epsHindi: 24, epsEnglish: 24, epsSubbed: 24, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9253-tIUXF2gfU8Sg.jpg", description: "The self-proclaimed mad scientist Rintarou Okabe rents out a room. Steins Gate Hindi Dub." },
+            { id: "sword-art-online", title: "Sword Art Online", genre: "Action", epsHindi: 96, epsEnglish: 96, epsSubbed: 96, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx11757-SxYDUzdr9rh2.jpg", description: "In the year 2022, virtual reality has progressed by leaps and bounds. SAO Hindi Dub." },
+            { id: "tokyo-ghoul", title: "Tokyo Ghoul", genre: "Action", epsHindi: 48, epsEnglish: 48, epsSubbed: 48, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b20605-k665mVkSug8D.jpg", description: "Tokyo has become a cruel and merciless city. Watch Tokyo Ghoul Hindi Dub." },
+            { id: "haikyuu", title: "Haikyuu!!", genre: "Sports", epsHindi: 85, epsEnglish: 85, epsSubbed: 85, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20464-ooZUyBe4ptp9.png", description: "Inspired after watching a volleyball ace nicknamed \"Little Giant\" in action. Haikyuu Hindi Dub." },
+            { id: "cyberpunk-edgerunners", title: "Cyberpunk: Edgerunners", genre: "Sci-Fi", epsHindi: 10, epsEnglish: 10, epsSubbed: 10, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120377-ayZPoxiWt4Li.jpg", description: "In a dystopia riddled with corruption and cybernetic implants. Cyberpunk Edgerunners Hindi Dub." },
+            { id: "blue-lock", title: "Blue Lock", genre: "Sports", epsHindi: 24, epsEnglish: 24, epsSubbed: 24, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137822-U8naszP96vzC.png", description: "After reflecting on the current state of Japanese soccer. Blue Lock Hindi Dub." },
+            { id: "kaiju-no-8", title: "Kaiju No. 8", genre: "Action", epsHindi: 12, epsEnglish: 12, epsSubbed: 12, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153288-25FBfFJzEQ5O.jpg", description: "Grotesque, Godzilla-like monsters called \"kaijuu\" have been appearing around Japan. Kaiju No 8 Hindi Dub." },
+            { id: "wind-breaker", title: "Wind Breaker", genre: "Action", epsHindi: 13, epsEnglish: 13, epsSubbed: 13, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx163270-wboZJp0ybwVK.jpg", description: "Haruka Sakura wants nothing to do with weaklings—he's only interested in the strongest of the strong. Wind Breaker Hindi Dub." },
+            { id: "your-name", title: "Your Name (Movie)", genre: "Drama", epsHindi: 1, epsEnglish: 1, epsSubbed: 1, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/97962-3rBcawJt63sG.jpg", description: "Mitsuha and Taki are two total strangers living completely different lives. But when Mitsuha makes a wish to leave her mountain town for the bustling city of Tokyo, they become connected in a bizarre way. Your Name Hindi Dub & Hindi Sub." },
+            { id: "suzume", title: "Suzume (Movie)", genre: "Adventure", epsHindi: 1, epsEnglish: 1, epsSubbed: 1, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx142770-dDaDIRnsv5jN.jpg", description: "17-year-old Suzume's journey begins in a quiet town in Kyushu when she encounters a young man who tells her, \"I'm looking for a door.\" Suzume Hindi Dub & Hindi Sub." },
+            { id: "a-silent-voice", title: "A Silent Voice (Movie)", genre: "Drama", epsHindi: 1, epsEnglish: 1, epsSubbed: 1, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20954-sYRfE5jQRtSB.jpg", description: "A deaf elementary school girl, Shouko Nishimiya, upon transferring, meets a boy named Shouya Ishida in her new class. A Silent Voice Hindi Dub & Hindi Sub." },
+            { id: "mugen-train", title: "Demon Slayer: Mugen Train (Movie)", genre: "Action", epsHindi: 1, epsEnglish: 1, epsSubbed: 1, thumbnail: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx112151-1qlQwPB1RrJe.png", description: "Tanjiro and the group have completed their rehabilitation training at the Butterfly Mansion, and they arrive to their next mission on the Mugen Train. Demon Slayer Movie Hindi Dub & Hindi Sub." }
+        ];
+        
+        const genresList = ["Action", "Adventure", "Comedy", "Fantasy", "Drama", "Mystery", "Supernatural", "Sci-Fi", "Sports"];
+        
+        /* === CONFIG === */
+        const ITEMS_PER_PAGE = 12;
+
+        /* === HELPERS === */
+        function toggleMenu() {
+            const nav = document.getElementById('nav-menu');
+            nav.classList.toggle('active');
+        }
+
+        function handleSearch(type) {
+            const inputId = type === 'desktop' ? 'desktop-search-input' : 'mobile-search-input';
+            const val = document.getElementById(inputId).value.trim();
+            if(val) {
+                window.location.hash = `#search/${encodeURIComponent(val)}/1`;
+                document.getElementById(inputId).value = '';
+                if(type === 'mobile') toggleMenu();
+            }
+        }
+
+        function closeFloatingAd() { 
+            const ad = document.getElementById('floating-ad');
+            if (ad) ad.style.display = 'none'; 
+        }
+        function closePopupAd() { 
+            const popup = document.getElementById('popup-ad-modal');
+            if (popup) popup.style.display = 'none'; 
+        }
+
+        setTimeout(() => {
+            const popup = document.getElementById('popup-ad-modal');
+            if (popup) popup.style.display = 'flex';
+        }, 5000);
+
+        window.handlePlayClick = function() {
+            window.open('https://www.effectivecpmnetwork.com/t6cwy0a746?key=798da8154386b3117b395ff54f1c6e4e', '_blank');
+            
+            const pPlay = document.getElementById('player-play-state');
+            const pLoad = document.getElementById('player-loading-state');
+            const pError = document.getElementById('player-error-state');
+            
+            if (pPlay) pPlay.style.display = 'none';
+            if (pError) pError.style.display = 'none';
+            if (pLoad) pLoad.style.display = 'flex';
+            
+            setTimeout(() => {
+                const checkLoad = document.getElementById('player-loading-state');
+                const checkError = document.getElementById('player-error-state');
+                if (checkLoad && checkLoad.style.display === 'flex') {
+                    checkLoad.style.display = 'none';
+                    if (checkError) checkError.style.display = 'flex';
+                }
+            }, 15000);
+        };
+
+        function generateAnimeCardHTML(anime) {
+            return `
+                <div class="anime-card">
+                    <a href="#anime/${anime.id}">
+                        <div class="card-img">
+                            <img src="${anime.thumbnail}" alt="${anime.title}">
+                            <div class="play-overlay"><i class="fa-solid fa-circle-play"></i></div>
+                        </div>
+                        <div class="card-info">
+                            <h3 class="card-title" title="${anime.title}">${anime.title}</h3>
+                            <div style="font-size: 11px; color: #2ed573; margin-bottom: 5px; font-weight: 500;">Hindi dub and English dub</div>
+                            <div class="card-meta">
+                                <span>${anime.genre}</span>
+                                <span><i class="fa-solid fa-tv"></i> ${anime.title.includes('(Movie)') ? 'Movie' : 'Anime'}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            `;
+        }
+
+        function renderSidebarWidgets() {
+            let tgHtml = '';
+            genresList.forEach(g => {
+                tgHtml += `<a href="#category/${g}/1" class="tag">${g}</a>`;
+            });
+            document.getElementById('sidebar-genres').innerHTML = tgHtml;
+
+            let ltHtml = '';
+            animes.slice(0, 5).forEach(e => {
+                ltHtml += `
+                    <li><a href="#anime/${e.id}">
+                        <img src="${e.thumbnail}" alt="Thumb">
+                        <div class="side-info">
+                            <h4>${e.title}</h4>
+                            <p>${e.genre}</p>
+                        </div>
+                    </a></li>
+                `;
+            });
+            document.getElementById('sidebar-latest').innerHTML = ltHtml;
+        }
+
+        function renderPagination(totalItems, currentPage, basePath) {
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+            if (totalPages <= 1) return '';
+            
+            let html = '<div class="pagination">';
+            if (currentPage > 1) {
+                html += `<a href="${basePath}/${currentPage - 1}" class="page-btn"><i class="fa-solid fa-angle-left"></i> Prev</a>`;
+            }
+            for(let i=1; i<=totalPages; i++) {
+                html += `<a href="${basePath}/${i}" class="page-btn ${i === currentPage ? 'active' : ''}">${i}</a>`;
+            }
+            if (currentPage < totalPages) {
+                html += `<a href="${basePath}/${currentPage + 1}" class="page-btn">Next <i class="fa-solid fa-angle-right"></i></a>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        /* === PAGE RENDERERS === */
+        const app = document.getElementById('app');
+
+        function renderHome() {
+            let html = `
+                <section class="hero">
+                    <h1>Watch Your Favorite Hindi Dub Anime Online</h1>
+                    <p>Stream high quality subbed and Hindi dub anime episodes for free. Get the best trending anime in Hindi Dub.</p>
+                    <a href="#episodes/1" class="btn">Browse Hindi Dub Animes <i class="fa-solid fa-play"></i></a>
+                </section>
+            `;
+
+            const lastWatched = localStorage.getItem('lastWatched');
+            if(lastWatched) {
+                const lwObj = JSON.parse(lastWatched);
+                html += `
+                    <div class="section-title">Continue Watching</div>
+                    <div class="content-box" style="display:flex; gap:20px; align-items:center; background:#ff475711; border: 1px solid #ff475755;">
+                        <img src="${lwObj.thumbnail}" style="width:120px; border-radius:4px;" alt="thumb">
+                        <div>
+                            <h3 style="margin-bottom:10px;">${lwObj.title} - Episode ${lwObj.ep} (${lwObj.lang})</h3>
+                            <a href="#anime/${lwObj.id}/${lwObj.lang}/${lwObj.ep}" class="btn" style="padding: 8px 15px; font-size:14px;"><i class="fa-solid fa-play"></i> Resume</a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `<h2 class="section-title">Watch Your Favorite Hindi dub anime <a href="#episodes/1" style="font-size:14px; font-family:var(--font-body); color:var(--text-light); text-transform:none;">View All</a></h2>`;
+            html += `<div class="card-grid">`;
+            animes.forEach(item => { html += generateAnimeCardHTML(item); });
+            html += `</div>`;
+
+            html += `<div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>`;
+
+            app.innerHTML = html;
+        }
+
+        function renderList(list, title, currentPage, basePath) {
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const paginatedItems = list.slice(start, end);
+
+            let html = `<h2 class="section-title">${title}</h2>`;
+            html += `<div class="card-grid">`;
+            paginatedItems.forEach(item => { html += generateAnimeCardHTML(item); });
+            html += `</div>`;
+
+            html += renderPagination(Math.ceil(list.length / ITEMS_PER_PAGE), currentPage, basePath);
+
+            app.innerHTML = html;
+        }
+
+        function renderAnimeDetails(id, lang = null, epNum = null) {
+            const anime = animes.find(a => a.id === id);
+            if (!anime) {
+                renderHome();
+                return;
+            }
+
+            const currentLang = lang || 'subbed';
+            let html = '';
+            let topArea = '';
+
+            if (epNum) {
+                const maxEps = anime['eps' + currentLang.charAt(0).toUpperCase() + currentLang.slice(1)] || 0;
+                epNum = parseInt(epNum);
+
+                let prevEp = epNum - 1;
+                let nextEp = epNum + 1;
+                
+                let prevBtn = prevEp >= 1 ? `<a href="#anime/${anime.id}/${currentLang}/${prevEp}" class="control-btn"><i class="fa-solid fa-backward-step"></i> Prev Ep</a>` : `<button class="control-btn" disabled style="opacity:0.5"><i class="fa-solid fa-backward-step"></i> Prev Ep</button>`;
+                let nextBtn = nextEp <= maxEps ? `<a href="#anime/${anime.id}/${currentLang}/${nextEp}" class="control-btn">Next Ep <i class="fa-solid fa-forward-step"></i></a>` : `<button class="control-btn" disabled style="opacity:0.5">Next Ep <i class="fa-solid fa-forward-step"></i></button>`;
+
+                topArea = `
+                    <div style="margin-bottom: 30px;">
+                        <h1 style="font-size:20px; margin-bottom:15px; display: flex; align-items: center; gap: 10px;">
+                            <a href="#anime/${anime.id}" style="color:var(--text-light); border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; font-size: 14px;"><i class="fa-solid fa-arrow-left"></i> Back</a> 
+                            <span>${anime.title} - Episode ${epNum} (${currentLang.toUpperCase()})</span>
+                        </h1>
+                        <div class="player-wrapper" id="video-player" style="position:relative; background:#0f0f0f;">
+                            <div id="player-play-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; width:100%; height:100%; position:absolute; top:0; left:0; z-index:10;" onclick="handlePlayClick()">
+                                <i class="fa-solid fa-circle-play" style="font-size:90px; color:var(--primary-accent); transition: transform 0.2s; filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></i>
+                                <div style="position:absolute; bottom:0; left:0; width:100%; height:50px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); display:flex; align-items:center; padding:0 20px; box-sizing:border-box;">
+                                    <i class="fa-solid fa-play" style="color:#fff; font-size:20px; margin-right:15px;"></i>
+                                    <div style="flex:1; height:4px; background:rgba(255,255,255,0.3); border-radius:2px; position:relative;"><div style="position:absolute; top:0; left:0; height:100%; width:0%; background:var(--primary-accent); border-radius:2px;"></div></div>
+<i class="fa-solid fa-volume-high" style="color:#fff; font-size:18px; margin-left:15px;"></i>
+                                    <i class="fa-solid fa-expand" style="color:#fff; font-size:18px; margin-left:15px;"></i>
+                                </div>
+                            </div>
+                            <div id="player-loading-state" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <div style="width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top: 5px solid var(--primary-accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom:15px;"></div>
+                                <p style="margin:0; font-size:16px;">Loading video...</p>
+                            </div>
+                            <div id="player-error-state" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
+                                <i class="fa-solid fa-triangle-exclamation" style="font-size:40px; color:#ffdd59; margin-bottom:15px;"></i>
+                                <h3 style="font-family:var(--font-headings); margin-bottom:5px; margin-top:0;">Network Connection Error</h3>
+                                <button class="btn" style="padding: 10px 25px; font-size:16px;" onclick="handlePlayClick()"><i class="fa-solid fa-rotate-right"></i> Retry</button>
+                            </div>
+                        </div>
+                        <div class="watch-controls">
+                            ${prevBtn}
+                            <a href="#download/${anime.id}/${lang || 'subbed'}/${epNum}" class="control-btn dl"><i class="fa-solid fa-download"></i> Download</a>
+                            ${nextBtn}
+                        </div>
+                        <div class="ad-responsive-container" style="width:100%; display:flex; justify-content:center; align-items:center; margin: 20px 0; overflow:hidden;">
+    <iframe class="desktop-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;b19e6bc99ede23f262204103c751db9b&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 90, &#39;width&#39; : 728, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/b19e6bc99ede23f262204103c751db9b/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="728" height="90" frameborder="0" scrolling="no" style="display:block;max-width:100%;"></iframe>
+    <iframe class="mobile-ad" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;padding:0;overflow:hidden;background:transparent;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;script&gt;  atOptions = { &#39;key&#39; : &#39;9a562e58c10f0dd20674583f3b5b78da&#39;, &#39;format&#39; : &#39;iframe&#39;, &#39;height&#39; : 50, &#39;width&#39; : 320, &#39;params&#39; : {} };&lt;/script&gt;&lt;script src=&quot;https://www.highperformanceformat.com/9a562e58c10f0dd20674583f3b5b78da/invoke.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;" width="320" height="50" frameborder="0" scrolling="no" style="display:none;max-width:100%;"></iframe>
+</div>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="content-box ep-details">
+                    ${topArea}
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 15px;">Select Language / Format</h3>
+                    <div class="lang-tabs">
+                        <button id="tab-subbed" class="lang-tab" onclick="loadEpisodes('${anime.id}', 'subbed')">Subbed</button>
+                        <button id="tab-english" class="lang-tab" onclick="loadEpisodes('${anime.id}', 'english')">English Dub</button>
+                        <button id="tab-hindi" class="lang-tab" onclick="loadEpisodes('${anime.id}', 'hindi')">Hindi Dub</button>
+                    </div>
+                    
+                    <div id="episodes-container" class="ep-grid">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <h2 class="section-title">Related Animes</h2>
+                <div class="card-grid">
+            `;
+            
+            const related = animes.filter(e => e.genre === anime.genre && e.id !== anime.id).slice(0, 4);
+            if(related.length === 0) {
+                related.push(...animes.filter(e => e.id !== anime.id).slice(0,4));
+            }
+            related.forEach(r => html += generateAnimeCardHTML(r));
+            
+            html += `</div>`;
+            app.innerHTML = html;
+            
+            setTimeout(() => {
+                loadEpisodes(anime.id, currentLang, epNum);
+                // scroll to tabs if epNum is given, maybe? Actually scroll to top is handled by router
+            }, 0);
+        }
+
+        window.loadEpisodes = function(animeId, lang, activeEp = null) {
+            const anime = animes.find(a => a.id === animeId);
+            if (!anime) return;
+            
+            document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.getElementById(`tab-${lang}`);
+            if (activeTab) activeTab.classList.add('active');
+
+            const epCount = anime['eps' + lang.charAt(0).toUpperCase() + lang.slice(1)];
+            const container = document.getElementById('episodes-container');
+            if(!container) return;
+            
+            if(!epCount || epCount === 0) {
+                container.innerHTML = '<p style="color:var(--text-light); text-align:center; padding: 20px; width:100%;">Episodes in this language are not available yet.</p>';
+                return;
+            }
+
+            let epHtml = '';
+            for(let i=1; i<=epCount; i++) {
+                const isActive = activeEp && activeEp == i ? 'active' : '';
+                epHtml += `<a href="#anime/${anime.id}/${lang}/${i}" class="ep-btn ${isActive}">${i}</a>`;
+            }
+            container.innerHTML = epHtml;
+        }
+
+        function renderGenres() {
+            let html = `<h2 class="section-title">Browse By Genre</h2><div class="row">`;
+            genresList.forEach(g => {
+                html += `
+                    <div style="width:25%; padding: 10px;">
+                        <a href="#category/${g}/1" class="genre-box">${g}</a>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            html += `<style>@media(max-width:768px){ .genre-box { font-size:16px; height:80px;} div[style*="width:25%"] { width: 50% !important; } }</style>`;
+            app.innerHTML = html;
+        }
+
+        function renderDownloadPage(id, lang, epNum) {
+            const anime = animes.find(a => a.id === id);
+            if (!anime) {
+                renderHome();
+                return;
+            }
+            const currentLang = lang || 'subbed';
+            const currentEp = epNum || 1;
+            
+            let html = `
+                <div class="content-box" style="text-align:center; padding: 40px 20px;">
+                    <h1 class="section-title" style="justify-content:center; border:none; margin-bottom: 30px;">Download Episode</h1>
+                    
+                    <img src="${anime.thumbnail}" alt="${anime.title}" style="width: 200px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-bottom: 20px;">
+                    
+                    <h2 style="margin-bottom: 10px; font-family: var(--font-headings); font-size: 24px;">${anime.title}</h2>
+                    <p style="color: var(--text-light); margin-bottom: 20px; font-size: 16px;">Episode ${currentEp} (${currentLang.toUpperCase()})</p>
+                    
+                    <div style="background:var(--header-bg); padding: 15px; border-radius: 8px; max-width: 400px; margin: 0 auto 30px;">
+                        <p style="margin: 0; font-size: 14px; color: var(--text-light);">Direct high-speed download is ready. By clicking download, an advertisement link will open to support us.</p>
+                    </div>
+
+                    <a href="https://www.effectivecpmnetwork.com/x8bd3wadb?key=9e71d63439ddd918ce28e2ed0b687e95" target="_blank" class="btn" style="padding: 15px 40px; font-size: 18px; border-radius: 30px; display:inline-block;">
+                        <i class="fa-solid fa-download"></i> Start Download
+                    </a>
+                    
+                    <div style="margin-top: 30px;">
+                        <a href="#anime/${id}/${currentLang}/${currentEp}" style="color: var(--text-light); text-decoration: underline;"><i class="fa-solid fa-arrow-left"></i> Go back to watching</a>
+                    </div>
+                </div>
+            `;
+            
+            app.innerHTML = html;
+        }
+
+        function renderContact() {
+            let html = `
+                <div class="content-box static-content">
+                    <h1>Contact Us</h1>
+                    <form onsubmit="event.preventDefault(); alert('Message sent successfully (Demo)!'); this.reset();">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-control" placeholder="Your Message..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            `;
+            app.innerHTML = html;
+        }
+
+        function renderStatic(title, content) {
+            app.innerHTML = `
+                <div class="content-box static-content">
+                    <h1>${title}</h1>
+                    <div style="color: var(--text-light); line-height:1.8;">
+                        <p>${content}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* === ROUTER === */
+        function router() {
+            const hash = window.location.hash.slice(1) || 'home';
+            const parts = hash.split('/');
+            const route = parts[0];
+            const param1 = parts[1];
+            const param2 = parts[2];
+            const param3 = parts[3]; // for watch
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const sidebar = document.getElementById('sidebar');
+
+            if (route === 'home') {
+                renderHome();
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'episodes') {
+                renderList(animes, 'Watch Your Favorite Hindi dub anime', parseInt(param1) || 1, '#episodes');
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'anime') {
+                renderAnimeDetails(param1, param2, param3);
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'category') { 
+                const genre = decodeURIComponent(param1);
+                renderList(animes.filter(e => e.genre === genre), `Genre: ${genre}`, parseInt(param2) || 1, `#category/${param1}`);
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'search') {
+                const query = decodeURIComponent(param1).toLowerCase();
+                const res = animes.filter(e => e.title.toLowerCase().includes(query));
+                renderList(res, `Search Results for "${query}"`, parseInt(param2) || 1, `#search/${param1}`);
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'genres') {
+                renderGenres();
+                sidebar.style.display = 'block';
+            } 
+            else if (route === 'download') {
+                renderDownloadPage(param1, param2, param3);
+                sidebar.style.display = 'none';
+            }
+            else if (route === 'contact') {
+                renderContact();
+                sidebar.style.display = 'none'; 
+            } 
+            else if (route === 'privacy') {
+                renderStatic("Privacy Policy", "This Privacy Policy describes Our policies...");
+                sidebar.style.display = 'none';
+            } 
+            else {
+                // 404 fallback
+                renderHome();
+                sidebar.style.display = 'block';
+            }
+        }
+
+        // Initialize App
+        window.addEventListener('hashchange', router);
+        renderSidebarWidgets();
+        router(); // initial load
+
+    </script>
+</body>
+</html>
